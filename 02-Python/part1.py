@@ -1,4 +1,3 @@
-initial = None
 with open("../res/02-input.txt", 'r') as file:
     initial = list(map(int, [line.replace('\n', '') for line in file.readlines()][0].split(',')))
 
