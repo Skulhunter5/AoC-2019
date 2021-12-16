@@ -18,24 +18,21 @@ def intcodeComputer(mem):
         i += 1
         if(opcode == 99):
             break
-        elif(opcode == 1):
-            if(len(parameterTypes) < 2):
-                parameterTypes = ("0" * (2 - len(parameterTypes))) + parameterTypes
-            a = mem[mem[i]] if parameterTypes[1] == "0" else mem[i]
-            b = mem[mem[i+1]] if parameterTypes[0] == "0" else mem[i+1]
-            mem[mem[i+2]] = a + b
-            i += 3
-        elif(opcode == 2):
+        elif(opcode in [1, 2]):
             parameterTypes = ("0" * (2 - len(parameterTypes))) + parameterTypes
             a = mem[mem[i]] if parameterTypes[1] == "0" else mem[i]
             b = mem[mem[i+1]] if parameterTypes[0] == "0" else mem[i+1]
-            mem[mem[i+2]] = a * b
+            if(opcode == 1):
+                mem[mem[i+2]] = a + b
+            else:
+                mem[mem[i+2]] = a * b
             i += 3
         elif(opcode == 3):
             mem[mem[i]] = getInput()
             i += 1
         elif(opcode == 4):
-            doOutput(mem[mem[i]])
+            output = mem[mem[i]] if (("0" * (1 - len(parameterTypes))) + parameterTypes)[0] == "0" else mem[i]
+            doOutput(output)
             i += 1
         else:
             print("\x1b[31m[ERROR]: invalid opcode\x1b[0m")

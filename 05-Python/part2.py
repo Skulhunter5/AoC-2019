@@ -18,54 +18,38 @@ def intcodeComputer(mem):
         i += 1
         if(opcode == 99):
             break
-        elif(opcode == 1):
-            if(len(parameterTypes) < 2):
-                parameterTypes = ("0" * (2 - len(parameterTypes))) + parameterTypes
-            a = mem[mem[i]] if parameterTypes[1] == "0" else mem[i]
-            b = mem[mem[i+1]] if parameterTypes[0] == "0" else mem[i+1]
-            mem[mem[i+2]] = a + b
-            i += 3
-        elif(opcode == 2):
+        elif(opcode in [1, 2]):
             parameterTypes = ("0" * (2 - len(parameterTypes))) + parameterTypes
             a = mem[mem[i]] if parameterTypes[1] == "0" else mem[i]
             b = mem[mem[i+1]] if parameterTypes[0] == "0" else mem[i+1]
-            mem[mem[i+2]] = a * b
+            if(opcode == 1):
+                mem[mem[i+2]] = a + b
+            else:
+                mem[mem[i+2]] = a * b
             i += 3
         elif(opcode == 3):
             mem[mem[i]] = getInput()
             i += 1
         elif(opcode == 4):
-            parameterTypes = ("0" * (1 - len(parameterTypes))) + parameterTypes
-            output = mem[mem[i]] if parameterTypes[0] == "0" else mem[i]
+            output = mem[mem[i]] if (("0" * (1 - len(parameterTypes))) + parameterTypes)[0] == "0" else mem[i]
             doOutput(output)
             i += 1
-        elif(opcode == 5):
+        elif(opcode in [5, 6]):
             parameterTypes = ("0" * (2 - len(parameterTypes))) + parameterTypes
             condition = mem[mem[i]] if parameterTypes[1] == "0" else mem[i]
             addr = mem[mem[i+1]] if parameterTypes[0] == "0" else mem[i+1]
-            if(condition != 0):
+            if((opcode == 5 and condition != 0) or (opcode == 6 and condition == 0)):
                 i = addr
             else:
                 i += 2
-        elif(opcode == 6):
+        elif(opcode in [7, 8]):
             parameterTypes = ("0" * (2 - len(parameterTypes))) + parameterTypes
-            condition = mem[mem[i]] if parameterTypes[1] == "0" else mem[i]
-            addr = mem[mem[i+1]] if parameterTypes[0] == "0" else mem[i+1]
-            if(condition == 0):
-                i = addr
+            a = mem[mem[i]] if parameterTypes[1] == "0" else mem[i]
+            b = mem[mem[i+1]] if parameterTypes[0] == "0" else mem[i+1]
+            if(opcode == 7):
+                mem[mem[i+2]] = 1 if a < b else 0
             else:
-                i += 2
-        elif(opcode == 7):
-            parameterTypes = ("0" * (2 - len(parameterTypes))) + parameterTypes
-            a = mem[mem[i]] if parameterTypes[1] == "0" else mem[i]
-            b = mem[mem[i+1]] if parameterTypes[0] == "0" else mem[i+1]
-            mem[mem[i+2]] = 1 if a < b else 0
-            i += 3
-        elif(opcode == 8):
-            parameterTypes = ("0" * (2 - len(parameterTypes))) + parameterTypes
-            a = mem[mem[i]] if parameterTypes[1] == "0" else mem[i]
-            b = mem[mem[i+1]] if parameterTypes[0] == "0" else mem[i+1]
-            mem[mem[i+2]] = 1 if a == b else 0
+                mem[mem[i+2]] = 1 if a == b else 0
             i += 3
         else:
             print("\x1b[31m[ERROR]: invalid opcode\x1b[0m")
